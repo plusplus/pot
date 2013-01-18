@@ -7,7 +7,6 @@ Gem::Specification.new do |s|
   s.authors     = ["Julian Russell"]
   s.email       = 'julian@myfoodlink.com'
   s.files       = Dir['lib/**/*.rb']
-  s.homepage    =
-    'https://github.com/plusplus/mongo-stats'
-  spec.add_runtime_dependency 'mongo', '~> 1.5'
+  s.homepage    = 'https://github.com/plusplus/mongo-stats'
+  s.add_runtime_dependency 'mongo', '~> 1.5'
 end

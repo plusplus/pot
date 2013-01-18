@@ -1,5 +1,7 @@
+require 'mongo'
 require 'mongo_stats/config'
 require 'mongo_stats/collection'
+require 'mongo_stats/report'
 
 module MongoStats
   extend self
