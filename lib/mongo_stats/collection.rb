@@ -18,17 +18,17 @@ module MongoStats
 
     def record_event( time, scope, event, accumulator, data )
       event_collection.insert(
-        happened_at: time,
-        scope: scope,
-        event: event,
-        value: accumulator || 0,
-        data: data
+        :happened_at => time,
+        :scope => scope,
+        :event => event,
+        :value => accumulator || 0,
+        :data => data
       )
     end
 
     def update_reports( time, scope, event, accumulator, data)
       report_updates( time, scope, event, accumulator || 0 ).each do |query, update|
-        report_collection.update( query, update, upsert: true)
+        report_collection.update( query, update, :upsert => true)
       end
     end
 

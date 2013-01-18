@@ -3,7 +3,7 @@ module MongoStats
     extend self
 
     def timeslot_formats
-      {year: "%Y", month: "%Y-%m", day: "%Y-%m-%d", hour: "%Y-%m-%d-%H"}
+      {:year => "%Y", :month => "%Y-%m", :day => "%Y-%m-%d", :hour => "%Y-%m-%d-%H"}
     end
 
     def events_collection_name
