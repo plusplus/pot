@@ -6,7 +6,7 @@ module MongoStats
     
     def initialize( attrs = {} )
       self.mongo_db = attrs.fetch( :mongo_db )
-      self.collection_prefix = attrs[:mongo_collection_prefix] || 'st'
+      self.mongo_collection_prefix = attrs[:mongo_collection_prefix] || 'st'
       self.periods           = attrs[:periods]           || Periods.new
     end
 
