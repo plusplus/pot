@@ -2,59 +2,106 @@ module MongoStats
 
   class Collection
 
+    attr_accessor :mongo_database, :periods, :mongo_collection_prefix, :name
+
     # collection_finder can just be a mongo db object,
     # or a hash of collections
-    def initialize( timeslot_formats, collection_finder, report_collection_name, events_collection_name )
-      @timeslot_formats = timeslot_formats
-      @collection_finder = collection_finder
-      @reports_collection_name = report_collection_name
-      @events_collection_name = events_collection_name
+    def initialize( attrs = {} )
+      self.name                    = attrs.fetch(:name)
+      self.mongo_database          = attrs.fetch(:mongo_database)
+      self.mongo_collection_prefix = attrs[:mongo_collection_prefix] || 'stats_reports'
+      self.periods                 = attrs[:periods]           || Periods.new
     end
 
-    def stat( time, scope, event, data = nil, accumulator = nil )
-      record_event( time, scope, event, accumulator || 0, data || {} )
-      update_reports( time, scope, event, accumulator || 0, data || {} )
+    def record( attrs = {} )
+      data = attrs.fetch( :data )
+      time = attrs[:time] || Time.now
+      mongo_operations( time, data ).each( &:run )
     end
 
-    def record_event( time, scope, event, accumulator, data )
-      event_collection.insert(
-        :happened_at => time,
-        :scope => scope,
-        :event => event,
-        :value => accumulator || 0,
-        :data => data
-      )
+    def report_at( period_name, attrs = {} )
+      time = attrs[:time] || Time.now
+      id = periods.id_for( time, period_name )
+      opts = {}
+      opts[:fields] = {d: attrs[:fields]} if attrs[:field]
+      opts[:fields] ||= {d: true}
+      record = mongo_collection( period_name ).find_one( {"_id" => id}, opts )
+      record["d"] if record
     end
 
-    def update_reports( time, scope, event, accumulator, data)
-      report_updates( time, scope, event, accumulator || 0 ).each do |query, update|
-        report_collection.update( query, update, :upsert => true)
+    def all_reports_for( time )
+      {}.tap do |reports|
+        @timeslot_formats.keys.each do |slot_name|
+          reports[slot_name] = report_for( name, slot_name, time )
+        end
       end
     end
 
-    def report_updates( time, scope, event, accumulator )
-      report_timeslots( time ).map {|timeslot|
-        report_update( scope, timeslot, event, accumulator )
+    def series( period_name, from, to, key = nil )
+      mongo_collection(period_name).find(select_for_date_range(period_name, from, to), :sort => "_id").map do |raw_record|
+        DataPoint.new( period_name: period_name, raw_record: raw_record )
+      end
+    end
+
+    def pick( period_name, from, to, field )
+      path = ["d"] + field.split(".")
+      mongo_collection(period_name).find(select_for_date_range(period_name, from, to), fields: ["d.#{field}"], sort: "_id").map do |raw_record|
+        [raw_record["_id"], pick_from_data( raw_record, path)]
+      end.select {|key,d| !d.nil?}
+    end
+
+    def select_for_date_range( period_name, from, to )
+      from_id = periods.id_for(from, period_name )
+      to_id   = periods.id_for(to, period_name )
+      {"_id" => {"$gte" => from_id, "$lte" => to_id}}
+    end
+
+    def pick_from_data( hash, path )
+      head, *rest = path
+      return nil if head.nil? || hash.nil?
+
+      if rest.empty?
+        hash[head]
+      else
+        pick_from_data( hash[head], rest)
+      end
+    end
+
+    protected
+
+    def mongo_operations( time, data )
+      periods.all_periods_for(time).map {|period_name, timeslot|
+        UpdateQuery.new(
+          collection: mongo_collection( period_name ),
+          id: timeslot,
+          data: data)
       }
     end
 
-    def report_update( scope, timeslot, event, accumulator )
-      [
-        {"_id" => id_for( scope, timeslot )},
-        {"$inc" => {
-          "stats.#{event}.count" => 1,
-          "stats.#{event}.value" => accumulator
-          }
-        }
-      ]
+    def mongo_collection( period_name )
+      mongo_database[mongo_collection_name( period_name )]
     end
 
-    def id_for( scope, timeslot )
-      "#{scope || "GLOBAL"}:#{timeslot}"
+    # If the stats collection is named "turnover" then this will
+    # return something like: st-hour-turnover, st-day-turnover, st-month-turnover
+    def mongo_collection_name( period_name )
+      "#{mongo_collection_prefix}-#{period_name}-#{name}"
+    end
+
+    def point_in_time( period_name, at )
+      collection = mongo_collection( period_name )
+      id = timeslot( at )
+      collection.find({"_id" => id})
+    end
+
+
+
+    def id_for( timeslot )
+      timeslot
     end
 
     def report_timeslots( time )
-      @timeslot_formats.keys.map {|slot_name| timeslot( slot_name, time )}
+      @timeslot_formats.map {|slot_name, format| [slot_name, timeslot( slot_name, time )]}
     end
 
     def timeslot( slot_name, time )
@@ -63,30 +110,7 @@ module MongoStats
       time.strftime( format )
     end
 
-    # reporting methods
 
-    def report_for( scope, slot_name, time )
-      report = report_collection.find_one( "_id"=> id_for( scope, timeslot( slot_name, time ) ) )
-      Report.new( (report && report['stats']) || {} )
-    end
-
-    def all_reports_for( scope, time )
-      {}.tap do |reports|
-        @timeslot_formats.keys.each do |slot_name|
-          reports[slot_name] = report_for( scope, slot_name, time )
-        end
-      end
-    end
-
-    protected
-
-    def event_collection
-      @collection_finder[@events_collection_name]
-    end
-
-    def report_collection
-      @collection_finder[@reports_collection_name]
-    end
 
   end
 end
