@@ -1,3 +1,7 @@
+require 'mongo_stats/update_query'
+require 'mongo_stats/periods'
+require 'mongo_stats/data_point'
+
 module MongoStats
 
   class Collection

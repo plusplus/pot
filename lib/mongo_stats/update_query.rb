@@ -1,3 +1,5 @@
+require 'mongo_stats/update_converter'
+
 module MongoStats
   class UpdateQuery
 

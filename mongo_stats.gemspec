@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'mongo_stats'
-  s.version     = '0.0.3'
+  s.version     = '0.0.4'
   s.date        = '2013-01-18'
   s.summary     = "Simple thingy for recording stats!"
   s.description = "A simple hello world gem"
