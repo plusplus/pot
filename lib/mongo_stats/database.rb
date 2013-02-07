@@ -1,3 +1,5 @@
+require 'mongo_stats/periods'
+
 module MongoStats
 
   class Database

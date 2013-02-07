@@ -6,7 +6,6 @@ require 'mongo_stats/data_point'
 require 'mongo_stats/report'
 require 'mongo_stats/update_query'
 
-
 module MongoStats
   extend self
 
