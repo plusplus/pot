@@ -1,16 +1,16 @@
 module MongoStats
   class Periods
 
-    def all_period_keys
-      ['year', 'month', 'day', 'hour']
+    attr_accessor :first_day_of_week, :keys
+
+    def initialize( attrs = {} )
+      self.first_day_of_week = attrs[:first_day_of_week] || 1
+      default_keys = [:year, :month, :week, :day, :hour]
+      self.keys = attrs[:keys] || default_keys
     end
 
     def all_periods_for( time )
-      all_period_keys.map {|k| [k, send(k.to_sym, time)]}
-    end
-
-    def adjust_for_zone( time )
-      time
+      keys.map {|k| [k, send(k.to_sym, time)]}
     end
 
     def id_for( time, period )
@@ -22,23 +22,34 @@ module MongoStats
     end
 
     def year(time)
-      adjust_for_zone(time).strftime("%Y")
+      time.strftime("%Y")
     end
 
     def month(time)
-      adjust_for_zone(time).strftime("%Y-%m")
+      time.strftime("%Y-%m")
     end
 
     def day(time)
-      adjust_for_zone(time).strftime("%Y-%m-%d")
+      time.strftime("%Y-%m-%d")
     end
 
     def hour(time)
-      adjust_for_zone(time).strftime("%Y-%m-%d-%H")
+      time.strftime("%Y-%m-%d-%H")
+    end
+
+    def week(time)
+      # move to closest start of week
+      wday = time.wday
+      time = time - ((wday - first_day_of_week) % 7) * 24 * 60 * 60
+      time.strftime("%Y-%m-%d")
     end
 
     # def finyear(time)
     #   (time - 6.months).year.to_s
+    # end
+
+    # def finyear_start_month
+    #   7
     # end
 
     # def au_quarter(time)

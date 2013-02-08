@@ -31,7 +31,7 @@ describe MongoStats::Collection do
   let(:base_2m) {Time.new( 2012, 2, 23, 12, 43 )}
 
   before :each do
-    periods.all_period_keys.each do |period|
+    periods.keys.each do |period|
       ['subject', 'collection_2'].each do |collection_name|
         collection_name = "st-#{period}-#{collection_name}"
         database.drop_collection(collection_name)
@@ -106,8 +106,8 @@ describe MongoStats::Collection do
       subject.record( time: prev_day, data: {a: 10} )
       subject.record( time: prev_month, data: {a: 10} )
       subject.record( time: prev_year, data: {a: 10} )
-      
-      {"hour" => 2, "day" => 3, "month" => 4, "year" => 5}.each do |period_name, expected|
+
+      {hour: 2, week: 3, month: 4, year: 5, week: 4}.each do |period_name, expected|
         report = subject.report_at( period_name, time: base )
         report["a"].should eq(expected * 10)
       end
