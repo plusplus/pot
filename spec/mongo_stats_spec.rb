@@ -8,5 +8,5 @@ describe MongoStats do
       config.database = Mongo::Connection.new['mongo_stats_test']
     end
   end
-  
+
 end

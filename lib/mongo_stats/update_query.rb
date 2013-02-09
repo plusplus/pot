@@ -15,7 +15,7 @@ module MongoStats
     def run
       collection.update( query_clause, update_clause, upsert: true )
     end
-      
+
     def update_clause
       {"$inc" => converter.flatten_for_update( d: data )}
     end

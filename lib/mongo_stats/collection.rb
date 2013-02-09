@@ -6,15 +6,15 @@ module MongoStats
 
   class Collection
 
-    attr_accessor :mongo_database, :periods, :mongo_collection_prefix, :name
+    attr_accessor :mongo_database, :periods, :collection_names, :name
 
     # collection_finder can just be a mongo db object,
     # or a hash of collections
     def initialize( attrs = {} )
       self.name                    = attrs.fetch(:name)
       self.mongo_database          = attrs.fetch(:mongo_database)
-      self.mongo_collection_prefix = attrs[:mongo_collection_prefix] || 'stats_reports'
       self.periods                 = attrs[:periods]           || Periods.new
+      self.collection_names        = attrs[:collection_names]  || MongoCollectionNames.new(prefix: 'st')
     end
 
     def record( attrs = {} )
@@ -83,13 +83,7 @@ module MongoStats
     end
 
     def mongo_collection( period_name )
-      mongo_database[mongo_collection_name( period_name )]
-    end
-
-    # If the stats collection is named "turnover" then this will
-    # return something like: st-hour-turnover, st-day-turnover, st-month-turnover
-    def mongo_collection_name( period_name )
-      "#{mongo_collection_prefix}-#{period_name}-#{name}"
+      mongo_database[collection_names.period( name, period_name )]
     end
 
     def point_in_time( period_name, at )
