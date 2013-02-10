@@ -79,6 +79,18 @@ describe MongoStats::Collection do
       series[2][1].should eq(3)
     end
 
+    it "isn't sparse works for structured records" do
+      [base_1m].each_with_index do |time, i|
+        subject.record( time: time, data: {a: {b: (i + 1)}} )
+      end
+      series = subject.pick_( 'month', base, base_2m, "a.b" )
+      series.size.should eq(3)
+      series[0][1].should eq(0)
+      series[1][1].should eq(1)
+      series[2][1].should eq(0)
+    end
+
+
     it "can extract structured records" do
       [base, base_1m, base_2m].each_with_index do |time, i|
         subject.record( time: time, data: {a: {b: (i + 1)}} )

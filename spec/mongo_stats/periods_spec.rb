@@ -22,4 +22,44 @@ describe MongoStats::Database do
     end
 
   end
+
+
+  describe "#years" do
+    it "works for a single year" do
+      r = subject.years( Time.new(2013,1,11), Time.new(2013,2,11) )
+      expect(r).to eq(["2013"])
+    end
+
+    it "works for a range of years" do
+      r = subject.years( Time.new(2011,1,11), Time.new(2013,2,11) )
+      expect(r).to eq(%w(2011 2012 2013))
+    end
+  end
+
+  describe "#months" do
+    it "works for a single month" do
+      r = subject.months( Time.new(2013,1,11), Time.new(2013,1,12) )
+      expect(r).to eq(["2013-01"])
+    end
+
+    it "works for a range of months across years" do
+      r = subject.months( Time.new(2011,12,11), Time.new(2012,2,11) )
+      expect(r).to eq(["2011-12","2012-01","2012-02"])
+    end
+  end
+
+  describe "#weeks" do
+    it "works for a single week" do
+      r = subject.weeks( Time.new(2013,1,11), Time.new(2013,1,12) )
+      expect(r).to eq(["2013-01-07"])
+    end
+
+    it "works for a range of weeks" do
+      r = subject.weeks( Time.new(2013,1,11), Time.new(2013,1,23) )
+      expect(r).to eq(["2013-01-07","2013-01-14","2013-01-21"])
+    end
+  end
+
+
+
 end

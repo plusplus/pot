@@ -49,9 +49,25 @@ module MongoStats
 
     def pick( period_name, from, to, field )
       path = ["d"] + field.split(".")
+
       mongo_collection(period_name).find(select_for_date_range(period_name, from, to), fields: ["d.#{field}"], sort: "_id").map do |raw_record|
         [raw_record["_id"], pick_from_data( raw_record, path)]
       end.select {|key,d| !d.nil?}
+    end
+
+
+    def pick_( period_name, from, to, field )
+      path = ["d"] + field.split(".")
+
+      all_keys = periods.all_keys_for( period_name, from, to )
+      ks = {}
+      all_keys.each {|k| ks[k] = 0}
+
+      mongo_collection(period_name).find(select_for_date_range(period_name, from, to), fields: ["d.#{field}"], sort: "_id").each do |raw_record|
+        ks[raw_record["_id"]] = pick_from_data( raw_record, path) || 0
+      end
+
+      ks.map {|k,v| [k,v]}
     end
 
     def select_for_date_range( period_name, from, to )
