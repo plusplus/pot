@@ -79,15 +79,20 @@ describe Pot::Collection do
       series[2][1].should eq(3)
     end
 
-    it "isn't sparse works for structured records" do
-      [base_1m].each_with_index do |time, i|
-        subject.record( time: time, data: {a: {b: (i + 1)}} )
-      end
-      series = subject.pick_( 'month', base, base_2m, "a.b" )
+    it "returns the entire requested range by default" do
+      subject.record( time: base_1m, data: {a: 1} )
+      series = subject.pick( 'month', base, base_2m, "a" )
       series.size.should eq(3)
       series[0][1].should eq(0)
       series[1][1].should eq(1)
       series[2][1].should eq(0)
+    end
+
+    it "can return a sparse response" do
+      subject.record( time: base_1m, data: {a: 1} )
+      series = subject.pick( 'month', base, base_2m, "a", sparse: true )
+      series.size.should eq(1)
+      series[0][1].should eq(1)
     end
 
 

@@ -5,8 +5,8 @@ require 'pot/periods'
 describe Pot::Collection do
 
   let(:connection) {Mongo::Connection.new}
-  let(:mongo_database) {connection['stats_test']}
-  let(:database) {Pot::Database.new( mongo_db: mongo_database )}
+  let(:mongo_db)   {connection['stats_test']}
+  let(:database)   {Pot::Database.new( mongo_db: mongo_db )}
 
 
   let(:c1) {database.collection('c1')}
@@ -17,8 +17,8 @@ describe Pot::Collection do
   let(:base_2m) {Time.new( 2012, 2, 23, 12, 43 )}
 
   before :each do
-    mongo_database.collection_names.each do |name|
-      mongo_database.drop_collection(name) if name.start_with?("st-")
+    mongo_db.collection_names.each do |name|
+      mongo_db.drop_collection(name) if name.start_with?("pot-")
     end
   end
 

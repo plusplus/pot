@@ -10,7 +10,7 @@ module Pot
     def initialize( attrs = {} )
       self.mongo_db = attrs.fetch( :mongo_db )
       self.periods           = attrs[:periods]           || Periods.new
-      self.mongo_collection_names = MongoCollectionNames.new( prefix: attrs[:mongo_collection_prefix] || 'st')
+      self.mongo_collection_names = MongoCollectionNames.new( prefix: attrs[:mongo_collection_prefix] || 'pot')
     end
 
     def collection( name )

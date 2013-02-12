@@ -1,7 +1,7 @@
 module Pot
   
   # Converts the hash of data for a stats update into
-  # 
+  # period delimited values suitable for a mongo update
   class UpdateConverter
 
     def self.flatten_for_update( value )

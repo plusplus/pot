@@ -14,7 +14,7 @@ module Pot
       self.name                    = attrs.fetch(:name)
       self.mongo_database          = attrs.fetch(:mongo_database)
       self.periods                 = attrs[:periods]           || Periods.new
-      self.collection_names        = attrs[:collection_names]  || MongoCollectionNames.new(prefix: 'st')
+      self.collection_names        = attrs[:collection_names]  || MongoCollectionNames.new(prefix: 'pot')
     end
 
     def record( attrs = {} )
@@ -47,27 +47,25 @@ module Pot
       end
     end
 
-    def pick( period_name, from, to, field )
+    def pick( period_name, from, to, field, options = {} )
+      sparse = options[:sparse]
       path = ["d"] + field.split(".")
 
-      mongo_collection(period_name).find(select_for_date_range(period_name, from, to), fields: ["d.#{field}"], sort: "_id").map do |raw_record|
-        [raw_record["_id"], pick_from_data( raw_record, path)]
-      end.select {|key,d| !d.nil?}
-    end
+      cursor = mongo_collection(period_name).find(select_for_date_range(period_name, from, to), fields: ["d.#{field}"], sort: "_id")
+      if sparse
+        cursor.map do |mongo_record|
+          [mongo_record["_id"], pick_from_data( mongo_record, path)]
+        end.select {|key,d| !d.nil?}
+      else
+        all_keys = periods.all_keys_for( period_name, from, to )
+        ks = all_keys.each_with_object({}) {|k, hash| hash[k] = 0}
 
+        cursor.each do |mongo_record|
+          ks[mongo_record["_id"]] = pick_from_data( mongo_record, path) || 0
+        end
 
-    def pick_( period_name, from, to, field )
-      path = ["d"] + field.split(".")
-
-      all_keys = periods.all_keys_for( period_name, from, to )
-      ks = {}
-      all_keys.each {|k| ks[k] = 0}
-
-      mongo_collection(period_name).find(select_for_date_range(period_name, from, to), fields: ["d.#{field}"], sort: "_id").each do |raw_record|
-        ks[raw_record["_id"]] = pick_from_data( raw_record, path) || 0
+        ks.map {|k,v| [k,v]}
       end
-
-      ks.map {|k,v| [k,v]}
     end
 
     def select_for_date_range( period_name, from, to )
