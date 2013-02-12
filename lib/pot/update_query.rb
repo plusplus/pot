@@ -1,6 +1,6 @@
-require 'mongo_stats/update_converter'
+require 'pot/update_converter'
 
-module MongoStats
+module Pot
   class UpdateQuery
 
     attr_accessor :id, :data, :collection, :converter

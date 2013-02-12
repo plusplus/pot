@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-require 'mongo_stats/periods'
+require 'pot/periods'
 
-describe MongoStats::Collection do
+describe Pot::Collection do
 
   let(:connection) {Mongo::Connection.new}
   let(:mongo_database) {connection['stats_test']}
-  let(:database) {MongoStats::Database.new( mongo_db: mongo_database )}
+  let(:database) {Pot::Database.new( mongo_db: mongo_database )}
 
 
   let(:c1) {database.collection('c1')}

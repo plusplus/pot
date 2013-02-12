@@ -1,4 +1,4 @@
-module MongoStats
+module Pot
   class Periods
 
     attr_accessor :first_day_of_week, :keys

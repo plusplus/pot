@@ -1,10 +1,10 @@
 require 'spec_helper'
-require 'mongo_stats/periods'
+require 'pot/periods'
 
-describe MongoStats::Database do
+describe Pot::Database do
 
 
-  subject {MongoStats::Periods.new}
+  subject {Pot::Periods.new}
 
 
   describe "#week" do

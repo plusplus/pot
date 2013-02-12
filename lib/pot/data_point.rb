@@ -1,4 +1,4 @@
-module MongoStats
+module Pot
   class DataPoint
     attr_accessor :raw_record, :period_name
 

@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-require 'mongo_stats/periods'
+require 'pot/periods'
 
-describe MongoStats::Collection do
+describe Pot::Collection do
 
-  let(:periods) {MongoStats::Periods.new}
+  let(:periods) {Pot::Periods.new}
   let(:name)    {"subject"}
   let(:connection) {Mongo::Connection.new}
   let(:database) {connection['stats_test']}
-  let(:collection_names) {MongoStats::MongoCollectionNames.new( prefix: 'st')}
+  let(:collection_names) {Pot::MongoCollectionNames.new( prefix: 'st')}
 
   subject do
-    MongoStats::Collection.new(
+    Pot::Collection.new(
       periods: periods,
       collection_names: collection_names,
       mongo_database: database,
@@ -20,7 +20,7 @@ describe MongoStats::Collection do
   end
 
   let(:collection_2) {
-    MongoStats::Collection.new(
+    Pot::Collection.new(
       periods: periods,
       mongo_collection_prefix: 'st',
       mongo_database: database,

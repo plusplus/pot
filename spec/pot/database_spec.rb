@@ -1,12 +1,12 @@
 require 'spec_helper'
-require 'mongo_stats/update_converter'
-describe MongoStats::Database do
+require 'pot/update_converter'
+describe Pot::Database do
 
 
   let(:mongo_database) {double(:mongo_db)}
   let(:periods) {double(:periods)}
   let(:prefix) {"prefix"}
-  subject {MongoStats::Database.new( mongo_db: mongo_database, periods: periods, mongo_collection_prefix: prefix )}
+  subject {Pot::Database.new( mongo_db: mongo_database, periods: periods, mongo_collection_prefix: prefix )}
 
 
   describe "#collection" do

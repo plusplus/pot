@@ -1,8 +1,8 @@
-require 'mongo_stats/update_query'
-require 'mongo_stats/periods'
-require 'mongo_stats/data_point'
+require 'pot/update_query'
+require 'pot/periods'
+require 'pot/data_point'
 
-module MongoStats
+module Pot
 
   class Collection
 

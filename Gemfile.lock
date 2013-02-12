@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mongo_stats (0.0.6)
+    pot (0.0.1)
       mongo (~> 1.1)
 
 GEM
@@ -28,5 +28,5 @@ PLATFORMS
 DEPENDENCIES
   bson_ext
   mongo
-  mongo_stats!
+  pot!
   rspec

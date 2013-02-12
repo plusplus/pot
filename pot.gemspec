@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
-  s.name        = 'mongo_stats'
-  s.version     = '0.0.7'
+  s.name        = 'pot'
+  s.version     = '0.0.1'
   s.date        = '2013-01-18'
-  s.summary     = "Simple thingy for recording stats!"
+  s.summary     = "Simple thingy for recording aggregations"
   s.description = "A simple hello world gem"
   s.authors     = ["Julian Russell"]
   s.email       = 'julian@myfoodlink.com'

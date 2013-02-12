@@ -1,4 +1,4 @@
-module MongoStats
+module Pot
   class Report
     def initialize( raw_report )
       @raw = raw_report

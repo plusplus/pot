@@ -1,4 +1,4 @@
-module MongoStats
+module Pot
   
   # Converts the hash of data for a stats update into
   # 

@@ -1,8 +1,8 @@
 require 'spec_helper'
-require 'mongo_stats/update_converter'
-describe MongoStats::UpdateConverter do
+require 'pot/update_converter'
+describe Pot::UpdateConverter do
 
-  subject {MongoStats::UpdateConverter}
+  subject {Pot::UpdateConverter}
 
   describe "#flatten_for_update" do
     it "converts symbols to strings" do

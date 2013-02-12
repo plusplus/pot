@@ -1,4 +1,4 @@
-module MongoStats
+module Pot
   class MongoCollectionNames
     
     # Prefix for all the stats collections (e.g. "st")

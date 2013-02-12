@@ -1,7 +1,7 @@
-require 'mongo_stats/periods'
-require 'mongo_stats/mongo_collection_names'
+require 'pot/periods'
+require 'pot/mongo_collection_names'
 
-module MongoStats
+module Pot
 
   class Database
 

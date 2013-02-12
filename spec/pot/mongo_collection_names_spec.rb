@@ -1,12 +1,12 @@
 require 'spec_helper'
-require 'mongo_stats/mongo_collection_names'
+require 'pot/mongo_collection_names'
 
-describe MongoStats::MongoCollectionNames do
+describe Pot::MongoCollectionNames do
 
-  subject {MongoStats::Periods.new}
+  subject {Pot::Periods.new}
 
 
-  subject {MongoStats::MongoCollectionNames.new( prefix: "p")}
+  subject {Pot::MongoCollectionNames.new( prefix: "p")}
   describe "#base_name" do
     it "adds the prefix" do
       expect(subject.base_name('x')).to eq("p-x")

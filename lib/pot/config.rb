@@ -1,4 +1,4 @@
-module MongoStats
+module Pot
   module Config
     extend self
 
