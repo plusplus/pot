@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'pot'
-  s.version     = '0.0.2'
+  s.version     = '0.0.3'
   s.date        = '2013-01-18'
   s.summary     = "Simple thingy for recording aggregations"
   s.description = "A simple hello world gem"
