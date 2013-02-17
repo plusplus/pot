@@ -49,23 +49,26 @@ module Pot
     DAY = HOUR * 24
 
     def weeks(from, to)
-      all_days = []
-      current = closest_week_start(from)
-      while current < to
-        all_days << current
-        current = current + 7 * DAY
-      end
-      all_days.map {|d| week(d)}
+      all_points(from, to, 7 * DAY).map {|t| week(t)}.uniq
     end
 
     def days(from, to)
-      all_days = []
-      current = from
-      while current < to
-        all_days << current
-        current = current + DAY
+      all_points(from, to, DAY).map {|t| day(t)}.uniq
+    end
+
+    def hours(from, to)
+      all_points(from, to, HOUR).map {|t| hour(t)}.uniq
+    end
+
+    def all_points( from, to, increment)
+      [].tap do |all|
+        current = from
+        while current < to
+          all << current
+          current = current + increment
+        end
+        all << to
       end
-      all_days.map {|d| day(d)}
     end
 
     def year(time)
